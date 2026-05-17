@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCare Plus — Modern Healthcare</title>
+
+  <style>
+    /* =========================================================
+       CSS CUSTOM PROPERTIES & RESET
+    ========================================================= */
+    :root {
+      --clr-bg:        #F4F7F9;
+      --clr-surface:   #FFFFFF;
+      --clr-border:    #E2EAF0;
+      --clr-primary:   #0A6EBD;
+      --clr-primary-d: #084F8A;
+      --clr-accent:    #00C2A8;
+      --clr-accent-d:  #009B86;
+      --clr-text:      #1A2332;
+      --clr-muted:     #6B7E96;
+      --clr-danger:    #E84A5F;
+      --clr-success:   #28A745;
+      --clr-warn:      #F5A623;
+      --radius-sm:     6px;
+      --radius-md:     12px;
+      --radius-lg:     20px;
+      --shadow-sm:     0 2px 8px rgba(10,110,189,.08);
+      --shadow-md:     0 6px 24px rgba(10,110,189,.12);
+      --shadow-lg:     0 16px 48px rgba(10,110,189,.16);
+      --transition:    .25s cubic-bezier(.4,0,.2,1);
+      --font-display:  'Georgia', 'Times New Roman', serif;
+      --font-body:     'Trebuchet MS', 'Segoe UI', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       TYPOGRAPHY HELPERS
+    ========================================================= */
+    h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.25; }
+    h1 { font-size: clamp(2rem, 5vw, 3.4rem); }
+    h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); }
+    h3 { font-size: 1.25rem; }
+    p  { color: var(--clr-muted); }
+
+    .section-label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--clr-accent);
+      margin-bottom: .5rem;
+    }
+
+    /* =========================================================
+       LAYOUT UTILITIES
+    ========================================================= */
+    .container {
+      width: min(1160px, 92vw);
+      margin-inline: auto;
+    }
+
+    section { padding-block: 96px; }
+
+    /* =========================================================
+       STICKY NAVBAR
+    ========================================================= */
+    #navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--clr-border);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow var(--transition);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      gap: 1.5rem;
+    }
+
+    /* Logo */
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .nav-logo-icon svg { width: 20px; height: 20px; fill: #fff; }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--clr-text);
+    }
+    .nav-logo-text span { color: var(--clr-primary); }
+
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--clr-muted);
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--clr-primary); }
+
+    /* CTA button */
+    .btn-book-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .55rem 1.2rem;
+      background: var(--clr-primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition), box-shadow var(--transition), transform var(--transition);
+      white-space: nowrap;
+    }
+    .btn-book-nav:hover {
+      background: var(--clr-primary-d);
+      box-shadow: 0 4px 16px rgba(10,110,189,.35);
+      transform: translateY(-1px);
+    }
+
+    /* Hamburger */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--clr-text);
+      border-radius: 2px;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    /* Mobile nav */
+    @media (max-width: 768px) {
+      .nav-links, .btn-book-nav { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 68px 0 0;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(16px);
+      z-index: 999;
+      padding: 2rem;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--clr-text);
+    }
+    .mobile-menu .btn-book-nav { width: fit-content; margin-top: .5rem; }
+
+    /* =========================================================
+       HERO SECTION
+    ========================================================= */
+    #hero {
+      padding-block: 0;
+      min-height: calc(100vh - 68px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 80% at 80% 50%, rgba(0,194,168,.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 20% 20%, rgba(10,110,189,.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; animation: fadeUp .8s ease both; }
+
+    .hero-content h1 {
+      margin-block: .75rem 1.25rem;
+      color: var(--clr-text);
+    }
+    .hero-content h1 em {
+      font-style: normal;
+      color: var(--clr-primary);
+    }
+    .hero-content p {
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .8rem 1.8rem;
+      background: linear-gradient(135deg, var(--clr-primary), #1A8FE0);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(10,110,189,.35);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(10,110,189,.45);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .8rem 1.8rem;
+      background: transparent;
+      color: var(--clr-primary);
+      border: 2px solid var(--clr-primary);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition), transform var(--transition);
+    }
+    .btn-secondary:hover {
+      background: var(--clr-primary);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-stat strong {
+      display: block;
+      font-size: 1.6rem;
+      font-family: var(--font-display);
+      color: var(--clr-text);
+    }
+    .hero-stat span { font-size: .8rem; color: var(--clr-muted); }
+
+    /* Hero visual card stack */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeUp .8s .2s ease both;
+      z-index: 1;
+    }
+
+    .hero-card-main {
+      background: var(--clr-surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid var(--clr-border);
+    }
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: 1.5rem;
+    }
+    .doc-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .doc-avatar svg { width: 28px; height: 28px; fill: #fff; }
+    .doc-info strong { display: block; color: var(--clr-text); font-size: .95rem; }
+    .doc-info span { font-size: .8rem; color: var(--clr-muted); }
+
+    .appt-mini {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+    .appt-mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .65rem .9rem;
+      background: var(--clr-bg);
+      border-radius: var(--radius-sm);
+      font-size: .85rem;
+    }
+    .appt-mini-row strong { color: var(--clr-text); font-size: .8rem; }
+    .badge {
+      padding: .2rem .6rem;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 700;
+    }
+    .badge-blue  { background: rgba(10,110,189,.1); color: var(--clr-primary); }
+    .badge-green { background: rgba(0,194,168,.1);  color: var(--clr-accent-d); }
+    .badge-warn  { background: rgba(245,166,35,.1); color: var(--clr-warn); }
+
+    .hero-card-float {
+      position: absolute;
+      bottom: -20px;
+      right: -30px;
+      background: var(--clr-surface);
+      border-radius: var(--radius-md);
+      padding: .9rem 1.1rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--clr-border);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    .float-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #28A745, #48C774);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .float-icon svg { width: 16px; height: 16px; fill: #fff; }
+    .hero-card-float strong { display: block; color: var(--clr-text); font-size: .85rem; }
+    .hero-card-float span  { color: var(--clr-muted); }
+
+    @media (max-width: 900px) {
+      #hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-block: 64px;
+        text-align: center;
+      }
+      .hero-content p { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-stats { justify-content: center; }
+      .hero-visual { display: none; }
+    }
+
+    /* =========================================================
+       SERVICES SECTION
+    ========================================================= */
+    #services { background: var(--clr-surface); }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-header p { max-width: 520px; margin-inline: auto; margin-top: .75rem; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .service-card {
+      background: var(--clr-bg);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--clr-primary), var(--clr-accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(10,110,189,.2);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .svc-icon {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-md);
+      display: grid;
+      place-items: center;
+      margin-bottom: 1.2rem;
+    }
+    .svc-icon svg { width: 28px; height: 28px; }
+
+    .service-card h3 { color: var(--clr-text); margin-bottom: .5rem; }
+    .service-card p  { font-size: .9rem; line-height: 1.65; }
+
+    /* =========================================================
+       APPOINTMENT SECTION
+    ========================================================= */
+    #appointments { background: var(--clr-bg); }
+
+    .appt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) { .appt-grid { grid-template-columns: 1fr; } }
+
+    /* Booking Form Card */
+    .form-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .form-card h3 { color: var(--clr-text); margin-bottom: .3rem; }
+    .form-card > p { font-size: .875rem; margin-bottom: 1.75rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+      margin-bottom: 1rem;
+    }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--clr-text);
+      letter-spacing: .03em;
+    }
+
+    input, select, textarea {
+      padding: .65rem .9rem;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-family: var(--font-body);
+      color: var(--clr-text);
+      background: var(--clr-bg);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+      width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--clr-primary);
+      box-shadow: 0 0 0 3px rgba(10,110,189,.12);
+      background: var(--clr-surface);
+    }
+    input::placeholder { color: var(--clr-muted); }
+
+    select { cursor: pointer; }
+
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      width: 100%;
+      padding: .85rem;
+      background: linear-gradient(135deg, var(--clr-primary), #1A8FE0);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: .5rem;
+      box-shadow: 0 4px 14px rgba(10,110,189,.3);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(10,110,189,.4);
+    }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
+
+    /* Dashboard Panel */
+    .dashboard-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .dash-header h3 { color: var(--clr-text); }
+    .dash-count {
+      background: rgba(10,110,189,.1);
+      color: var(--clr-primary);
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .25rem .65rem;
+      border-radius: 20px;
+    }
+
+    /* Appointment Item */
+    #appt-list { display: flex; flex-direction: column; gap: .9rem; }
+
+    .appt-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      background: var(--clr-bg);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      transition: opacity .4s ease, transform .4s ease, max-height .4s ease;
+      overflow: hidden;
+    }
+    .appt-item.fade-out {
+      opacity: 0;
+      transform: translateX(40px);
+      max-height: 0;
+      padding: 0;
+      margin: 0;
+      border: none;
+    }
+
+    .appt-dept-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .appt-dept-icon svg { width: 22px; height: 22px; fill: #fff; }
+
+    .appt-info { flex: 1; min-width: 0; }
+    .appt-info strong { display: block; font-size: .9rem; color: var(--clr-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .appt-info span   { font-size: .78rem; color: var(--clr-muted); }
+
+    .appt-meta { text-align: right; flex-shrink: 0; }
+    .appt-meta strong { display: block; font-size: .8rem; color: var(--clr-text); }
+    .appt-meta span   { font-size: .75rem; color: var(--clr-muted); }
+
+    .btn-cancel {
+      background: none;
+      border: 1.5px solid var(--clr-border);
+      border-radius: var(--radius-sm);
+      padding: .3rem .55rem;
+      cursor: pointer;
+      color: var(--clr-muted);
+      font-size: .72rem;
+      font-weight: 700;
+      margin-left: .5rem;
+      transition: border-color var(--transition), color var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+    .btn-cancel:hover {
+      border-color: var(--clr-danger);
+      color: var(--clr-danger);
+      background: rgba(232,74,95,.06);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+    .empty-state svg { opacity: .25; margin-bottom: .75rem; }
+    .empty-state p { font-size: .9rem; }
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+    footer {
+      background: #0D1B2A;
+      color: rgba(255,255,255,.75);
+      padding-block: 64px 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 860px) {
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    .footer-brand { grid-column: 1; }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1rem;
+    }
+    .footer-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--clr-primary), var(--clr-accent));
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+    }
+    .footer-logo-icon svg { width: 20px; height: 20px; fill: #fff; }
+    .footer-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      color: #fff;
+    }
+    .footer-brand p { font-size: .875rem; max-width: 300px; line-height: 1.7; }
+
+    .footer-col h4 {
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .55rem; }
+    .footer-col ul li { font-size: .85rem; }
+    .footer-col ul li a {
+      text-decoration: none;
+      color: rgba(255,255,255,.6);
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: #fff; }
+
+    .footer-hours li { display: flex; justify-content: space-between; gap: 1rem; }
+    .footer-hours strong { color: rgba(255,255,255,.9); font-size: .82rem; }
+    .footer-hours span   { font-size: .8rem; color: rgba(255,255,255,.5); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: .8rem;
+    }
+
+    /* =========================================================
+       TOAST NOTIFICATION
+    ========================================================= */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: flex-start;
+      gap: .85rem;
+      padding: 1rem 1.25rem;
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      min-width: 300px;
+      max-width: 380px;
+      pointer-events: auto;
+      animation: slideInToast .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .toast.hiding { animation: slideOutToast .3s ease both; }
+
+    .toast-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .toast-icon svg { width: 18px; height: 18px; fill: #fff; }
+    .toast-icon.success { background: var(--clr-success); }
+    .toast-icon.error   { background: var(--clr-danger); }
+
+    .toast-body { flex: 1; }
+    .toast-body strong { display: block; font-size: .9rem; color: var(--clr-text); margin-bottom: .15rem; }
+    .toast-body p { font-size: .82rem; color: var(--clr-muted); margin: 0; }
+
+    .toast-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--clr-muted);
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 0 0 0 .5rem;
+      pointer-events: auto;
+      transition: color var(--transition);
+    }
+    .toast-close:hover { color: var(--clr-text); }
+
+    /* =========================================================
+       KEYFRAME ANIMATIONS
+    ========================================================= */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+    @keyframes slideInToast {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutToast {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(60px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================
+       STICKY NAVBAR
+  ========================================================= -->
+  <nav id="navbar" role="banner">
+    <div class="container nav-inner">
+
+      <a href="#" class="nav-logo" aria-label="MediCare Plus Home">
+        <div class="nav-logo-icon" aria-hidden="true">
+          <!-- Medical Cross SVG -->
+          <svg viewBox="0 0 24 24"><path d="M10 2h4v7h7v4h-7v7h-4v-7H3v-4h7z"/></svg>
+        </div>
+        <span class="nav-logo-text">Medi<span>Care</span> Plus</span>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#appointments">Appointments</a></li>
+        <li><a href="#footer">Contact</a></li>
+      </ul>
+
+      <a href="#appointments" class="btn-book-nav">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3h-1V1h-2v2H8V1H6v2H5C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+        Book Appointment
+      </a>
+
+      <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+    <a href="#services" class="mobile-link">Services</a>
+    <a href="#appointments" class="mobile-link">Appointments</a>
+    <a href="#footer" class="mobile-link">Contact</a>
+    <a href="#appointments" class="btn-book-nav mobile-link">Book Appointment</a>
+  </nav>
+
+  <main>
+
+    <!-- =========================================================
+         HERO SECTION
+    ========================================================= -->
+    <section id="hero" class="container" aria-label="Welcome">
+      <div class="hero-bg" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <p class="section-label">Trusted Healthcare</p>
+        <h1>Your Health,<br><em>Our Priority</em></h1>
+        <p>
+          Access world-class medical expertise from the comfort of your home.
+          Book appointments, consult specialists, and manage your health — all in one place.
+        </p>
+        <div class="hero-actions">
+          <a href="#appointments" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 3h-1V1h-2v2H8V1H6v2H5C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            Book Appointment
+          </a>
+          <a href="#services" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Our Services
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>12,000+</strong>
+            <span>Patients Served</span>
+          </div>
+          <div class="hero-stat">
+            <strong>150+</strong>
+            <span>Specialist Doctors</span>
+          </div>
+          <div class="hero-stat">
+            <strong>98%</strong>
+            <span>Satisfaction Rate</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-card-main">
+          <div class="hero-card-header">
+            <div class="doc-avatar">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            </div>
+            <div class="doc-info">
+              <strong>Dr. Sarah Mitchell</strong>
+              <span>Chief Medical Officer</span>
+            </div>
+            <span class="badge badge-green" style="margin-left:auto;">Online</span>
+          </div>
+          <div class="appt-mini">
+            <div class="appt-mini-row">
+              <strong>Cardiology Check-up</strong>
+              <span class="badge badge-blue">Today, 2:00 PM</span>
+            </div>
+            <div class="appt-mini-row">
+              <strong>Pediatrics Follow-up</strong>
+              <span class="badge badge-green">Mon, 10:30 AM</span>
+            </div>
+            <div class="appt-mini-row">
+              <strong>General Consultation</strong>
+              <span class="badge badge-warn">Tue, 9:00 AM</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-card-float">
+          <div class="float-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <div>
+            <strong>Appointment Confirmed!</strong>
+            <span>Sent to your email</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         SERVICES SECTION
+    ========================================================= -->
+    <section id="services" aria-label="Medical Services">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">What We Offer</p>
+          <h2>Comprehensive Medical Services</h2>
+          <p>Our multi-specialty centre offers expert care across a wide range of departments, bringing top-tier medicine to you.</p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Card 1: General Consultation -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(10,110,189,.1);">
+              <svg viewBox="0 0 24 24" fill="var(--clr-primary)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            </div>
+            <h3>General Consultation</h3>
+            <p>Comprehensive primary care consultations with experienced general practitioners for all your everyday health concerns and preventive care needs.</p>
+          </article>
+
+          <!-- Card 2: Cardiology -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(232,74,95,.1);">
+              <svg viewBox="0 0 24 24" fill="var(--clr-danger)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            </div>
+            <h3>Cardiology</h3>
+            <p>State-of-the-art cardiac diagnostics, non-invasive procedures, and personalised heart health management plans from our renowned cardiologists.</p>
+          </article>
+
+          <!-- Card 3: Pediatrics -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(0,194,168,.1);">
+              <svg viewBox="0 0 24 24" fill="var(--clr-accent-d)"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM8.5 8C9.33 8 10 8.67 10 9.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zm-3.5 10c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z"/></svg>
+            </div>
+            <h3>Pediatrics</h3>
+            <p>Gentle, child-friendly care for infants, children and adolescents. Our paediatricians ensure your little ones grow up healthy and happy.</p>
+          </article>
+
+          <!-- Card 4: Neurology -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(130,80,255,.1);">
+              <svg viewBox="0 0 24 24" fill="#8250FF"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7zm1 14h-2v-1h2v1zm-2-3v-1.19c-1.75-.49-3-2.08-3-3.81 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.73-1.25 3.32-3 3.81V13h-2z"/></svg>
+            </div>
+            <h3>Neurology</h3>
+            <p>Advanced diagnosis and treatment for neurological conditions including migraines, epilepsy, and multiple sclerosis by expert neurologists.</p>
+          </article>
+
+          <!-- Card 5: Orthopedics -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(245,166,35,.1);">
+              <svg viewBox="0 0 24 24" fill="var(--clr-warn)"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></svg>
+            </div>
+            <h3>Orthopedics</h3>
+            <p>Expert treatment for musculoskeletal issues, sports injuries, joint replacements and spinal conditions using the latest orthopaedic techniques.</p>
+          </article>
+
+          <!-- Card 6: Dermatology -->
+          <article class="service-card">
+            <div class="svc-icon" style="background:rgba(255,120,90,.1);">
+              <svg viewBox="0 0 24 24" fill="#FF785A"><path d="M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58c2.05 0 4.1-.78 5.66-2.34 3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z"/></svg>
+            </div>
+            <h3>Dermatology</h3>
+            <p>Comprehensive skin care for all ages — from acne and eczema to cosmetic dermatology and skin cancer screenings by certified dermatologists.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         APPOINTMENT SECTION
+    ========================================================= -->
+    <section id="appointments" aria-label="Appointment booking and dashboard">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-label">Schedule & Manage</p>
+          <h2>Your Appointment Dashboard</h2>
+          <p>Book a new appointment or review and manage your upcoming visits — all from one place.</p>
+        </div>
+
+        <div class="appt-grid">
+
+          <!-- Booking Form -->
+          <div class="form-card">
+            <h3>Book a New Appointment</h3>
+            <p>Fill in your details below and we'll confirm your slot.</p>
+
+            <form id="booking-form" novalidate>
+              <div class="form-row">
+                <div class="field">
+                  <label for="f-name">Full Name *</label>
+                  <input type="text" id="f-name" name="name" placeholder="e.g. Aarav Sharma" required autocomplete="name" />
+                </div>
+                <div class="field">
+                  <label for="f-email">Email Address *</label>
+                  <input type="email" id="f-email" name="email" placeholder="you@example.com" required autocomplete="email" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="f-dept">Department *</label>
+                <select id="f-dept" name="department" required>
+                  <option value="">— Select a Department —</option>
+                  <option value="General Consultation">General Consultation</option>
+                  <option value="Cardiology">Cardiology</option>
+                  <option value="Pediatrics">Pediatrics</option>
+                  <option value="Neurology">Neurology</option>
+                  <option value="Orthopedics">Orthopedics</option>
+                  <option value="Dermatology">Dermatology</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="f-date">Preferred Date *</label>
+                  <input type="date" id="f-date" name="date" required />
+                </div>
+                <div class="field">
+                  <label for="f-time">Preferred Time *</label>
+                  <select id="f-time" name="time" required>
+                    <option value="">— Select a Time —</option>
+                    <option value="9:00 AM">9:00 AM</option>
+                    <option value="9:30 AM">9:30 AM</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="10:30 AM">10:30 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="2:30 PM">2:30 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="3:30 PM">3:30 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                Confirm Appointment
+              </button>
+            </form>
+          </div>
+
+          <!-- Dashboard -->
+          <div class="dashboard-card">
+            <div class="dash-header">
+              <h3>Upcoming Appointments</h3>
+              <span class="dash-count" id="appt-count">3 scheduled</span>
+            </div>
+            <div id="appt-list" role="list" aria-label="Upcoming appointments list">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+  ========================================================= -->
+  <footer id="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="footer-logo-icon">
+              <svg viewBox="0 0 24 24"><path d="M10 2h4v7h7v4h-7v7h-4v-7H3v-4h7z"/></svg>
+            </div>
+            <span class="footer-logo-text">MediCare Plus</span>
+          </div>
+          <p>Providing compassionate, evidence-based healthcare since 2001. Your well-being is at the heart of everything we do.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#services">General Consultation</a></li>
+            <li><a href="#services">Cardiology</a></li>
+            <li><a href="#services">Pediatrics</a></li>
+            <li><a href="#services">Neurology</a></li>
+            <li><a href="#services">Dermatology</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#appointments">Book Appointment</a></li>
+            <li><a href="#services">Departments</a></li>
+            <li><a href="#">Patient Portal</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Operating Hours</h4>
+          <ul class="footer-hours">
+            <li><strong>Mon – Fri</strong> <span>8:00 AM – 8:00 PM</span></li>
+            <li><strong>Saturday</strong>  <span>9:00 AM – 5:00 PM</span></li>
+            <li><strong>Sunday</strong>    <span>10:00 AM – 2:00 PM</span></li>
+            <li><strong>Emergency</strong> <span>24 / 7</span></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2025 MediCare Plus. All rights reserved.</span>
+        <span>Emergency Hotline: <strong style="color:#fff;">+1 (800) 123-4567</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- =========================================================
+       JAVASCRIPT
+  ========================================================= -->
+  <script>
+    'use strict';
+
+    /* -------------------------------------------------------
+       DEPARTMENT META — icon colours & SVG paths
+    ------------------------------------------------------- */
+    const DEPT_META = {
+      'General Consultation': {
+        bg: '#0A6EBD',
+        icon: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'
+      },
+      'Cardiology': {
+        bg: '#E84A5F',
+        icon: 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
+      },
+      'Pediatrics': {
+        bg: '#00C2A8',
+        icon: 'M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM8.5 8C9.33 8 10 8.67 10 9.5S9.33 11 8.5 11 7 10.33 7 9.5 7.67 8 8.5 8zm7 0c.83 0 1.5.67 1.5 1.5S16.33 11 15.5 11 14 10.33 14 9.5 14.67 8 15.5 8zm-3.5 10c-2.33 0-4.31-1.46-5.11-3.5h10.22c-.8 2.04-2.78 3.5-5.11 3.5z'
+      },
+      'Neurology': {
+        bg: '#8250FF',
+        icon: 'M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7zm1 14h-2v-1h2v1zm-2-3v-1.19c-1.75-.49-3-2.08-3-3.81 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.73-1.25 3.32-3 3.81V13h-2z'
+      },
+      'Orthopedics': {
+        bg: '#F5A623',
+        icon: 'M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z'
+      },
+      'Dermatology': {
+        bg: '#FF785A',
+        icon: 'M17.66 7.93L12 2.27 6.34 7.93c-3.12 3.12-3.12 8.19 0 11.31C7.9 20.8 9.95 21.58 12 21.58c2.05 0 4.1-.78 5.66-2.34 3.12-3.12 3.12-8.19 0-11.31zM12 19.59c-1.6 0-3.11-.62-4.24-1.76C6.62 16.69 6 15.19 6 13.59s.62-3.11 1.76-4.24L12 5.1v14.49z'
+      }
+    };
+
+    /* -------------------------------------------------------
+       STATE
+    ------------------------------------------------------- */
+    let appointments = [
+      { id: 1, name: 'Priya Mehta',     email: 'priya@example.com', department: 'Cardiology',            date: '2025-07-15', time: '10:00 AM' },
+      { id: 2, name: 'Rohan Das',       email: 'rohan@example.com', department: 'General Consultation',  date: '2025-07-16', time: '2:30 PM'  },
+      { id: 3, name: 'Ananya Singh',    email: 'ananya@example.com', department: 'Pediatrics',           date: '2025-07-18', time: '9:00 AM'  }
+    ];
+    let nextId = 4;
+
+    /* -------------------------------------------------------
+       HELPERS
+    ------------------------------------------------------- */
+    /** Format a date string (YYYY-MM-DD) to readable form */
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    /** Get dept meta, with fallback */
+    function getDeptMeta(dept) {
+      return DEPT_META[dept] || { bg: '#0A6EBD', icon: 'M19 3h-1V1h-2v2H8V1H6v2H5C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z' };
+    }
+
+    /* -------------------------------------------------------
+       RENDER APPOINTMENT LIST
+    ------------------------------------------------------- */
+    function renderAppointments() {
+      const list  = document.getElementById('appt-list');
+      const count = document.getElementById('appt-count');
+
+      // Update count badge
+      count.textContent = appointments.length === 0
+        ? 'None scheduled'
+        : `${appointments.length} scheduled`;
+
+      // Clear
+      list.innerHTML = '';
+
+      // Empty state
+      if (appointments.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <p>No upcoming appointments.<br>Book one using the form.</p>
+          </div>`;
+        return;
+      }
+
+      // Render each appointment
+      appointments.forEach(appt => {
+        const meta = getDeptMeta(appt.department);
+        const item = document.createElement('div');
+        item.classList.add('appt-item');
+        item.setAttribute('role', 'listitem');
+        item.dataset.id = appt.id;
+        item.innerHTML = `
+          <div class="appt-dept-icon" style="background:${meta.bg};" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="${meta.icon}"/></svg>
+          </div>
+          <div class="appt-info">
+            <strong title="${appt.name}">${appt.name}</strong>
+            <span>${appt.department}</span>
+          </div>
+          <div class="appt-meta">
+            <strong>${formatDate(appt.date)}</strong>
+            <span>${appt.time}</span>
+          </div>
+          <button class="btn-cancel" data-id="${appt.id}" aria-label="Cancel appointment for ${appt.name}">Cancel</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    /* -------------------------------------------------------
+       CANCEL APPOINTMENT
+    ------------------------------------------------------- */
+    document.getElementById('appt-list').addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn-cancel');
+      if (!btn) return;
+
+      const id   = parseInt(btn.dataset.id, 10);
+      const item = this.querySelector(`.appt-item[data-id="${id}"]`);
+      const appt = appointments.find(a => a.id === id);
+
+      if (!item) return;
+
+      // Fade-out animation then remove
+      item.classList.add('fade-out');
+      setTimeout(() => {
+        appointments = appointments.filter(a => a.id !== id);
+        renderAppointments();
+        showToast('error', 'Appointment Cancelled', `Your ${appt.department} appointment has been removed.`);
+      }, 400);
+    });
+
+    /* -------------------------------------------------------
+       BOOKING FORM SUBMIT
+    ------------------------------------------------------- */
+    document.getElementById('booking-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form  = this;
+      const name  = form.elements['name'].value.trim();
+      const email = form.elements['email'].value.trim();
+      const dept  = form.elements['department'].value;
+      const date  = form.elements['date'].value;
+      const time  = form.elements['time'].value;
+
+      // Basic validation
+      if (!name || !email || !dept || !date || !time) {
+        showToast('error', 'Missing Information', 'Please fill in all required fields before submitting.');
+        return;
+      }
+      // Email format check
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('error', 'Invalid Email', 'Please enter a valid email address.');
+        return;
+      }
+
+      // Add to state
+      const newAppt = { id: nextId++, name, email, department: dept, date, time };
+      appointments.push(newAppt);
+
+      // Re-render
+      renderAppointments();
+
+      // Scroll dashboard into view on mobile
+      document.querySelector('.dashboard-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      // Success toast
+      showToast('success', 'Appointment Booked!', `${dept} on ${formatDate(date)} at ${time}.`);
+
+      // Reset form
+      form.reset();
+    });
+
+    /* -------------------------------------------------------
+       TOAST SYSTEM
+    ------------------------------------------------------- */
+    const ICONS = {
+      success: 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z',
+      error:   'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'
+    };
+
+    function showToast(type, title, message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.classList.add('toast');
+      toast.setAttribute('role', 'alert');
+      toast.innerHTML = `
+        <div class="toast-icon ${type}" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="${ICONS[type]}"/></svg>
+        </div>
+        <div class="toast-body">
+          <strong>${title}</strong>
+          <p>${message}</p>
+        </div>
+        <button class="toast-close" aria-label="Dismiss notification">&#215;</button>
+      `;
+
+      container.appendChild(toast);
+
+      // Close button
+      toast.querySelector('.toast-close').addEventListener('click', () => dismissToast(toast));
+
+      // Auto-dismiss after 4 s
+      setTimeout(() => dismissToast(toast), 4000);
+    }
+
+    function dismissToast(toast) {
+      if (!toast.isConnected) return;
+      toast.classList.add('hiding');
+      setTimeout(() => toast.remove(), 300);
+    }
+
+    /* -------------------------------------------------------
+       MOBILE MENU TOGGLE
+    ------------------------------------------------------- */
+    const hamburger   = document.getElementById('hamburger');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const mobileLinks = mobileMenu.querySelectorAll('.mobile-link');
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', isOpen);
+      // Animate hamburger → X
+      const spans = hamburger.querySelectorAll('span');
+      if (isOpen) {
+        spans[0].style.transform = 'translateY(7px) rotate(45deg)';
+        spans[1].style.opacity   = '0';
+        spans[2].style.transform = 'translateY(-7px) rotate(-45deg)';
+      } else {
+        spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+      }
+    });
+
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        const spans = hamburger.querySelectorAll('span');
+        spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+      });
+    });
+
+    /* -------------------------------------------------------
+       SET MIN DATE FOR DATE INPUT
+    ------------------------------------------------------- */
+    const dateInput = document.getElementById('f-date');
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+
+    /* -------------------------------------------------------
+       INITIAL RENDER
+    ------------------------------------------------------- */
+    renderAppointments();
+  </script>
+
+</body>
+</html>
